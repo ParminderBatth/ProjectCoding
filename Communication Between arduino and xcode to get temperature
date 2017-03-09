@@ -1,0 +1,30 @@
+/* it provide the URL to talk to Arduino and sets the http request*/
+1.//NSMutableURLRequest --> to handle the calls of the HTTP protocol
+var requestFromUrl = NSMutableURLRequest(URL: NSURL(string: theURL)!)
+
+2.//-->call the class to get information from server
+requestFromUrl.HTTPMethod = "GET" 
+
+3.it sets the HTTP header file
+requestFromUrl.setValue("application/json; charset=utf=8", forHTTPHeaderField: "Content-Type") //-->
+requestFromUrl.setValue("application/json", forHTTPHeaderField: "Accept")
+
+4.//it defines the cache policy for the reciever
+requestFromUrl.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+
+5.// for fetching the data from server 
+NSURLConnection.sendAsynchronousRequest(requestFromUrl, queue: NSOperationQueue(),
+  completionHandler:{ (response:NSURLResponse!, data: NSData!, error: NSError!) -> Void in 
+
+  dispatch_async(dispatch_get_main_queue(), {
+    if let anError = error {
+      //to show errorr
+      self.showAlert(error!.localizedDescription)
+    } else {
+      //process further JSON
+      self.handleResultsOfWebCall(data)
+    }
+  })
+  return
+})
+//here we define the error method to define the error
